@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liste des Produits</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Liste des Produits</h2>  <a href="add_product.html"> Ajouter un produit </a> <br> <br>
+    <table id="products-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prix d'Achat</th>
+                <th>Prix de Vente</th>
+                <th>Quantité</th>
+                <th>Actions</th> <!-- Ajout de la colonne Actions -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Les produits seront ajoutés ici -->
+        </tbody>
+    </table>
+
+    <a href="gestion-produits.html"> Revenir </a>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        // Récupérer les produits à l'ouverture de la fenêtre
+        ipcRenderer.send('get-products');
+
+        ipcRenderer.on('get-products-response', (event, response) => {
+            const tableBody = document.getElementById('products-table').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ''; // Effacer le contenu précédent
+
+            if (response.success) {
+                response.products.forEach(product => {
+                    const row = tableBody.insertRow();
+                    row.insertCell(0).innerText = product.id;
+                    row.insertCell(1).innerText = product.name;
+                    row.insertCell(2).innerText = product.priceAchat.toFixed(2) + ' DA'; // Affichage du prix
+                    row.insertCell(3).innerText = product.priceVente.toFixed(2) + ' DA';
+                    row.insertCell(4).innerText = product.quantité.toFixed(2) ;
+                // Créer des boutons pour Modifier et Supprimer
+                const actionsCell = row.insertCell(5);
+                    const editButton = document.createElement('button');
+                    editButton.innerText = 'Modifier';
+                    editButton.onclick = () => {
+                        // Envoyer l'ID du produit à modifier
+                        ipcRenderer.send('edit-product', product.id);
+                    };
+                    
+                    const deleteButton = document.createElement('button');
+                    deleteButton.innerText = 'Supprimer';
+                    deleteButton.onclick = () => {
+                        // Envoyer l'ID du produit à supprimer
+                        ipcRenderer.send('delete-product', product.id);
+                    };
+
+                    actionsCell.appendChild(editButton);
+                    actionsCell.appendChild(deleteButton);
+                });
+            } else {
+                const row = tableBody.insertRow();
+                row.insertCell(0).innerText = 'Erreur lors de la récupération des produits.';
+                row.insertCell(1).innerText = '';
+                row.insertCell(2).innerText = '';
+                row.insertCell(3).innerText = '';
+                row.insertCell(4).innerText = '';
+            }
+        });
+        // Répondre à l'événement de réponse de suppression
+        ipcRenderer.on('delete-product-response', (event, response) => {
+            if (response.success) {
+                alert('Produit supprimé avec succès.');
+                // Rafraîchir la liste des produits
+                ipcRenderer.send('get-products');
+            } else {
+                alert('Erreur lors de la suppression du produit.');
+            }
+        });
+
+            
+    </script>
+</body>
+</html>

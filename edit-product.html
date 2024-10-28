@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Modifier un Produit</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h2>Modifier Produit</h2>
+    <form id="edit-product-form">
+        <input type="hidden" id="product-id">
+        <label for="product-name">Nom:</label>
+        <input type="text" id="product-name" required>
+        <br>
+        <label for="product-price-achat">Prix d'achat:</label>
+        <input type="number" id="product-price-achat" required>
+        <br>
+        <label for="product-price-vente">Prix de Vente:</label>
+        <input type="number" id="product-price-vente" required>
+        <br>
+        <label for="quantité">Quantité:</label>
+        <input type="number" id="quantité" required>
+        <br>
+        <button type="submit">Sauvegarder</button>
+    </form>
+
+    <script>
+
+        // Charger le produit à modifier
+        window.electron.ipcRenderer.on('load-product', (product) => {
+        if (product) { // Vérifie si le produit est défini
+            document.getElementById('product-id').value = product.id;
+            document.getElementById('product-name').value = product.name;
+            document.getElementById('product-price-achat').value = product.priceAchat.toFixed(2); // Assurez-vous d'afficher le prix au format correct
+            document.getElementById('product-price-vente').value = product.priceVente.toFixed(2);
+            document.getElementById('quantité').value = product.quantité.toFixed(2);
+        } else {
+            console.error('Aucun produit à charger.');
+        }
+    });
+
+        document.getElementById('edit-product-form').addEventListener('submit', (event) => {
+        event.preventDefault(); // Empêche la soumission par défaut
+
+        const id = document.getElementById('product-id').value;
+        const name = document.getElementById('product-name').value;
+        const priceAchat = document.getElementById('product-price-achat').value;
+        const priceVente = document.getElementById('product-price-vente').value;
+        const quantité = document.getElementById('quantité').value;
+
+        // Envoyer les nouvelles données pour mise à jour
+        window.electron.ipcRenderer.send('update-product', { id, name, priceAchat, priceVente, quantité });
+
+        // Émettre un événement pour indiquer que le produit a été mis à jour
+        window.electron.ipcRenderer.send('refresh-product-list');
+
+        // Fermer la fenêtre après modification
+        window.close();
+    });
+    </script>
+</body>
+</html>

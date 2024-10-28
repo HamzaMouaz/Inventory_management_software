@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
+    <link href="./styles.css" rel="stylesheet">
+    <title>First Project</title>
+    <style>
+      /* Styles pour le menu horizontal */
+      .menu {
+        display: flex;
+        justify-content: center;
+        background-color: #333;
+        padding: 10px;
+      }
+
+      .menu button {
+        background-color: #3b82f6;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
+
+      .menu button:hover {
+        background-color: #45a049;
+      }
+
+      .content {
+        padding: 20px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="menu">
+      <a href="view-products.html"> <button>Voir les Produits</button></a>
+      <a href="add_product.html"><button>Ajouter un Produit</button></a>
+    </div>
+
+    <div class="content">
+      SUPERETTE HAMZA 
+    </div>
+
+    <script src="./renderer.js"></script>
+    <script>
+      
+  </script>
+  </body>
+</html>

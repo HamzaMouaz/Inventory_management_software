@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles.css" rel="stylesheet">
+    <title>Tableau de Bord - Gestion de Stock</title>
+</head>
+<body>
+    <header>
+        <h1>Gestion de Stock - Tableau de Bord</h1>
+        <input type="text" id="search-bar" placeholder="Rechercher un produit...">
+    </header>
+
+    <main>
+        <!-- Statistiques Rapides -->
+        <section id="quick-stats">
+            <div class="stat">
+                <label>Total Stock</label>
+                <span id="total-stock">500 unités</span>
+            </div>
+            <div class="stat">
+                <label>Produits en Rupture de Stock</label>
+                <span id="low-stock-alert">3 produits</span>
+            </div>
+            <div class="stat">
+                <label>Ventes d’Aujourd’hui</label>
+                <span id="todays-sales">30 ventes</span>
+            </div>
+            <div class="stat">
+                <label>Bénéfice d’Aujourd’hui</label>
+                <span id="todays-profit">100 €</span>
+            </div>
+        </section>
+
+        <!-- Boutons de Navigation -->
+        <section id="navigation-buttons">
+            <button id="products-btn" onclick="navigateTo('products')">Produits</button>
+            <button id="sales-btn" onclick="navigateTo('sales')">Ventes</button>
+            <button id="suppliers-btn" onclick="navigateTo('suppliers')">Fournisseurs</button>
+            <button id="reports-btn" onclick="navigateTo('reports')">Rapports de Bénéfices</button>
+        </section>
+
+        <!-- Notifications -->
+        <section id="notifications">
+            <h2>Notifications</h2>
+            <ul>
+                <li>Produit A a atteint le seuil minimum de stock.</li>
+                <li>Produit B est presque en rupture de stock.</li>
+                <!-- Les notifications dynamiques peuvent être ajoutées ici -->
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>Utilisateur connecté : Admin</p>
+        <button id="help-btn" onclick="navigateTo('help')">Aide</button>
+    </footer>
+
+    <script>
+      document.getElementById('products-btn').addEventListener('click', () => {
+          window.electron.ipcRenderer.send('products-window'); // Envoie un événement pour ouvrir la fenêtre
+      });
+  
+        // Exemples de fonctions pour la navigation
+        function navigateTo(page) {
+            switch (page) {
+                case 'products':
+                    window.electron.ipcRenderer.send('open-products-window');
+                    break;
+                case 'sales':
+                    window.electron.ipcRenderer.send('open-sales-window');
+                    break;
+                case 'suppliers':
+                    window.electron.ipcRenderer.send('open-suppliers-window');
+                    break;
+                case 'reports':
+                    window.electron.ipcRenderer.send('open-reports-window');
+                    break;
+                case 'help':
+                    window.electron.ipcRenderer.send('open-help-window');
+                    break;
+            }
+        }
+    </script>
+    
+    
+</body>
+</html>
